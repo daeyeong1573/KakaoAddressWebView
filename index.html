@@ -19,7 +19,7 @@
     }
 
     function postMessageToAndroid(postData) {
-        Android.processDATA(JSON.stringify(postData));
+        window.Android.processDATA(JSON.stringify(postData));
     }
 
     var element_layer = document.getElementById('layer');
