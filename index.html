@@ -14,16 +14,24 @@
 
     console.log("Script loaded");
 
+    function onReceivedPostMessage(e) {
+        console.log("Received Post Message: " + JSON.stringify(e.data));
+    }
+    
     window.addEventListener("message", onReceivedPostMessage, false);
 
     function postMessageToiOS(postData) {
         console.log("Posting message to iOS: " + JSON.stringify(postData));
-        window.webkit.messageHandlers.callBackHandler.postMessage(postData);
+        if (window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.callBackHandler.postMessage(postData);
+        }
     }
 
     function postMessageToAndroid(postData) {
         console.log("Posting message to Android: " + JSON.stringify(postData));
-        window.Android.processDATA(JSON.stringify(postData));
+        if (window.Android) {
+            window.Android.processDATA(JSON.stringify(postData));
+        }
     }
 
     var element_layer = document.getElementById('layer');
@@ -48,25 +56,26 @@
                     zonecode : data.zonecode
                 };
 
-                window.postMessageToiOS(postData);
-                window.postMessageToAndroid(postData);
+                postMessageToiOS(postData);
+                postMessageToAndroid(postData);
             },
             width : '100%',
             height : '100%'
         }).embed(element_layer);
-        element_layer.style.display = 'block';
         initLayerPosition();
     }
 
     function initLayerPosition(){
         console.log("Initializing layer position");
 
-        var width = (window.innerWidth || document.documentElement.clientWidth);
-        var height = (window.innerHeight || document.documentElement.clientHeight);
-        element_layer.style.width = width + 'px';
-        element_layer.style.height = height + 'px';
-        element_layer.style.left = (((window.innerWidth || document.documentElement.clientWidth) - width)/2) + 'px';
-        element_layer.style.top = (((window.innerHeight || document.documentElement.clientHeight) - height)/2) + 'px';
+        if (element_layer) {
+            var width = (window.innerWidth || document.documentElement.clientWidth);
+            var height = (window.innerHeight || document.documentElement.clientHeight);
+            element_layer.style.width = width + 'px';
+            element_layer.style.height = height + 'px';
+            element_layer.style.left = (((window.innerWidth || document.documentElement.clientWidth) - width)/2) + 'px';
+            element_layer.style.top = (((window.innerHeight || document.documentElement.clientHeight) - height)/2) + 'px';
+        }
     }
 
 </script>
